@@ -11,6 +11,7 @@ function FakeBulbAccessory(log, config) {
   this.name = config["name"];
   this.bulbName = config["bulb_name"] || this.name; // fallback to "name" if you didn't specify an exact "bulb_name"
   this.binaryState = 0; // bulb state, default is OFF
+  this.intensity = 100;
   this.log("Starting a fake bulb device with name '" + this.bulbName + "'...");
 //  this.search();
 }
@@ -27,6 +28,18 @@ FakeBulbAccessory.prototype.setPowerOn = function(powerOn, callback) {
   callback(null);
 }
 
+FakeBulbAccessory.prototype.getBrightness = function(callback) {
+  var Brightness = this.intensity;
+  this.log("Brightness for the '%s' is %s", this.bulbName, this.Brightness);
+  callback(null, Brightness);
+}
+
+FakeBulbAccessory.prototype.setBrightness = function(Brightness, callback) {
+  this.intensity = Brightness;
+  this.log("Set brightness on the '%s' to %s", this.bulbName, this.Brightness);
+  callback(null);
+}
+
 FakeBulbAccessory.prototype.getServices = function() {
     var lightbulbService = new Service.Lightbulb(this.name);
     
@@ -34,8 +47,15 @@ FakeBulbAccessory.prototype.getServices = function() {
       .getCharacteristic(Characteristic.On)
       .on('get', this.getPowerOn.bind(this))
       .on('set', this.setPowerOn.bind(this));
+	lightbulbService
+	.getCharacteristic(Characteristic.Brightness)
+    .setProps({
+      minValue: 0,
+      maxValue: 100,
+      minStep: 25,
+    })
+    .on('get', this.getBrightness.bind(this))
+    .on('set', this.setBrightness.bind(this));
     
     return [lightbulbService];
 }
-
-
