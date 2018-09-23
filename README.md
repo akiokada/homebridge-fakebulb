@@ -1,6 +1,7 @@
 # homebridge-fakebulb
 
 Simulates a (fake) light bulb device on HomeBridge Platform
+Brightness setting can adjust the (fake) light intensity from 0%(off) to 100% in 25% increment.
 
 # Installation
 
